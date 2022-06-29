@@ -1,25 +1,23 @@
 import * as React from "react";
-import { useState, Fragment } from "react";
+import { useState, useEffect, Fragment } from "react";
 import Image from "./components/Image";
 import RandomNumber from "./components/RandomNumber";
 import About from "./components/About";
-import Info from "./components/Info";
-import Button from "./components/Button";
 import ContainerStyle from "./assets/styledComponents/ContainerStyle";
 import AboutStyle from "./assets/styledComponents/AboutStyle";
+import InfoStyle from "./assets/styledComponents/InfoStyle";
+import PersonIcon from "@mui/icons-material/Person";
 
 import "./global.css";
 
 function App() {
   const [dados, setDados] = useState();
 
-  async function showInfo() {
-    const response = await fetch(
-      `https://swapi.dev/api/people/${RandomNumber}`
-    );
-    const json = await response.json();
-    setDados(json);
-  }
+  useEffect(() => {
+    fetch(`https://swapi.dev/api/people/${RandomNumber}`)
+      .then((response) => response.json())
+      .then((json) => setDados(json));
+  }, []);
 
   return (
     <Fragment>
@@ -33,12 +31,16 @@ function App() {
         <AboutStyle>
           <About />
         </AboutStyle>
-        {dados && <Info dados={dados} />}
-        <div className="containerBtn">
-          <Button onClick={showInfo}>
-            <p className="btnText">Click and feel the force,baby!</p>
-          </Button>
-        </div>
+        {dados && (
+          <InfoStyle>
+            <PersonIcon fontSize="small" />
+            <p>ATK: 100 / DEF: 100</p>
+            <p>{dados.name}</p>
+            <p>{dados.height}cm</p>
+            <p>{dados.mass}kg</p>
+            <p>{dados.eye_color} eyes</p>
+          </InfoStyle>
+        )}
       </ContainerStyle>
     </Fragment>
   );
